@@ -17,31 +17,29 @@ class Wraith::CLI < Thor
     File.expand_path('../../../templates/', __FILE__)
   end
 
-  desc 'setup', 'creates config folder and default config'
-  def setup
+  desc 'init', 'creates config folder and default config'
+  def init
     template('configs/config.yaml', 'configs/config.yaml')
     template('javascript/snap.js', 'javascript/snap.js')
   end
 
-  desc 'setup_casper', 'creates config folder and default config for casper'
-  def setup_casper
-    template('configs/component.yaml', 'configs/component.yaml')
-    template('javascript/casper.js', 'javascript/casper.js')
-  end
-
-  desc 'reset_shots [config_name]', 'removes all the files in the shots folder'
-  def reset_shots(config_name='config')
+  desc 'clean [config_name]', 'removes all the files in the shots folder'
+  def clean(config_name='config')
     reset = Wraith::FolderManager.new(config_name)
     reset.clear_shots_folder
   end
 
-  desc 'setup_folders [config_name]', 'create folders for images'
-  def setup_folders(config_name='config')
-    create = Wraith::FolderManager.new(config_name)
-    create.create_folders
-  end
-
   no_commands do
+    def setup_casper
+      template('configs/component.yaml', 'configs/component.yaml')
+      template('javascript/casper.js', 'javascript/casper.js')
+    end
+
+    def setup_folders(config_name='config')
+      create = Wraith::FolderManager.new(config_name)
+      create.create_folders
+    end
+
     def check_for_paths(config_name)
       spider = Wraith::Spidering.new(config_name)
       spider.check_for_paths
@@ -56,73 +54,75 @@ class Wraith::CLI < Thor
       create = Wraith::FolderManager.new(config_name)
       create.restore_shots
     end
+
+    desc 'save_images [config_name]', 'captures screenshots'
+    def save_images(config_name='config', history = false)
+      save_images = Wraith::SaveImages.new(config_name, history)
+      save_images.save_images
+    end
+
+    desc 'crop_images [config_name]', 'crops images to the same height'
+    def crop(config_name='config')
+      crop = Wraith::CropImages.new(config_name)
+      crop.crop_images
+    end
+
+    desc 'compare_images [config_name]', 'compares images to generate diffs'
+    def compare_images(config_name='config')
+      compare = Wraith::CompareImages.new(config_name)
+      compare.compare_images
+    end
+
+    desc 'generate_thumbnails [config_name]', 'create thumbnails for gallery'
+    def generate_thumbnails(config_name='config')
+      thumbs = Wraith::Thumbnails.new(config_name)
+      thumbs.generate_thumbnails
+    end
+
+    desc 'multi_capture [filelist]', 'A Batch of Wraith Jobs'
+    def multi_capture(filelist)
+      config_array = IO.readlines(filelist)
+      config_array.each do |config|
+        capture(config.chomp)
+      end
+    end
+
+    desc 'generate_gallery [config_name]', 'create page for viewing images'
+    def generate_gallery(config_name='config')
+      gallery = Wraith::GalleryGenerator.new(config_name)
+      gallery.generate_gallery
+      puts 'Gallery generated'
+    end
   end
 
-  desc 'save_images [config_name]', 'captures screenshots'
-  def save_images(config_name='config', history = false)
-    save_images = Wraith::SaveImages.new(config_name, history)
-    save_images.save_images
-  end
 
-  desc 'crop_images [config_name]', 'crops images to the same height'
-  def crop_images(config_name='config')
-    crop = Wraith::CropImages.new(config_name)
-    crop.crop_images
-  end
-
-  desc 'compare_images [config_name]', 'compares images to generate diffs'
-  def compare_images(config_name='config')
-    compare = Wraith::CompareImages.new(config_name)
-    compare.compare_images
-  end
-
-  desc 'generate_thumbnails [config_name]', 'create thumbnails for gallery'
-  def generate_thumbnails(config_name='config')
-    thumbs = Wraith::Thumbnails.new(config_name)
-    thumbs.generate_thumbnails
-  end
-
-  desc 'generate_gallery [config_name]', 'create page for viewing images'
-  def generate_gallery(config_name='config')
-    gallery = Wraith::GalleryGenerator.new(config_name)
-    gallery.generate_gallery
-    puts 'Gallery generated'
-  end
-
-  desc 'capture [config_name]', 'A full Wraith job'
-  def capture(config='config')
-    reset_shots(config)
+  desc 'go [config_name]', 'A full Wraith job'
+  def go(config='config')
+    clean(config)
     check_for_paths(config)
     setup_folders(config)
     save_images(config)
-    crop_images(config)
+    crop(config)
     compare_images(config)
     generate_thumbnails(config)
     generate_gallery(config)
   end
 
-  desc 'multi_capture [filelist]', 'A Batch of Wraith Jobs'
-  def multi_capture(filelist)
-    config_array = IO.readlines(filelist)
-    config_array.each do |config|
-      capture(config.chomp)
-    end
-  end
 
-  desc 'history [config_name]', 'Setup a baseline set of shots'
-  def history(config='config')
-    reset_shots(config)
+  desc 'save [config_name]', 'Setup a baseline set of shots'
+  def save(config='config')
+    clean(config)
     setup_folders(config)
     save_images(config)
     copy_old_shots(config)
   end
 
   desc 'latest [config_name]', 'Capture new shots to compare with baseline'
-  def latest(config='config')
-    reset_shots(config)
+  def compare(config='config')
+    clean(config)
     restore_shots(config)
     save_images(config, true)
-    crop_images(config)
+    crop(config)
     compare_images(config)
     generate_thumbnails(config)
     generate_gallery(config)
