@@ -30,13 +30,13 @@ class Wraith::CLI < Thor
   end
 
   desc 'reset_shots [config_name]', 'removes all the files in the shots folder'
-  def reset_shots(config_name)
+  def reset_shots(config_name='config')
     reset = Wraith::FolderManager.new(config_name)
     reset.clear_shots_folder
   end
 
   desc 'setup_folders [config_name]', 'create folders for images'
-  def setup_folders(config_name)
+  def setup_folders(config_name='config')
     create = Wraith::FolderManager.new(config_name)
     create.create_folders
   end
@@ -59,38 +59,38 @@ class Wraith::CLI < Thor
   end
 
   desc 'save_images [config_name]', 'captures screenshots'
-  def save_images(config_name, history = false)
+  def save_images(config_name='config', history = false)
     save_images = Wraith::SaveImages.new(config_name, history)
     save_images.save_images
   end
 
   desc 'crop_images [config_name]', 'crops images to the same height'
-  def crop_images(config_name)
+  def crop_images(config_name='config')
     crop = Wraith::CropImages.new(config_name)
     crop.crop_images
   end
 
   desc 'compare_images [config_name]', 'compares images to generate diffs'
-  def compare_images(config_name)
+  def compare_images(config_name='config')
     compare = Wraith::CompareImages.new(config_name)
     compare.compare_images
   end
 
   desc 'generate_thumbnails [config_name]', 'create thumbnails for gallery'
-  def generate_thumbnails(config_name)
+  def generate_thumbnails(config_name='config')
     thumbs = Wraith::Thumbnails.new(config_name)
     thumbs.generate_thumbnails
   end
 
   desc 'generate_gallery [config_name]', 'create page for viewing images'
-  def generate_gallery(config_name)
+  def generate_gallery(config_name='config')
     gallery = Wraith::GalleryGenerator.new(config_name)
     gallery.generate_gallery
     puts 'Gallery generated'
   end
 
   desc 'capture [config_name]', 'A full Wraith job'
-  def capture(config)
+  def capture(config='config')
     reset_shots(config)
     check_for_paths(config)
     setup_folders(config)
@@ -110,7 +110,7 @@ class Wraith::CLI < Thor
   end
 
   desc 'history [config_name]', 'Setup a baseline set of shots'
-  def history(config)
+  def history(config='config')
     reset_shots(config)
     setup_folders(config)
     save_images(config)
@@ -118,7 +118,7 @@ class Wraith::CLI < Thor
   end
 
   desc 'latest [config_name]', 'Capture new shots to compare with baseline'
-  def latest(config)
+  def latest(config='config')
     reset_shots(config)
     restore_shots(config)
     save_images(config, true)

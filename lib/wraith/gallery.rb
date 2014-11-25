@@ -118,7 +118,7 @@ class Wraith::GalleryGenerator
   end
 
   def generate_gallery(withPath = '')
-    dest = "#{@location}/gallery.html"
+    dest = "#{@location}/index.html"
     directories = parse_directories(@location)
     generate_html(@location, directories, TEMPLATE_BY_DOMAIN_LOCATION, dest, withPath)
     FileUtils.cp(BOOTSTRAP_LOCATION, "#{@location}/bootstrap.min.css")
