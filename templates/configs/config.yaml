@@ -21,7 +21,7 @@ paths:
   home: /
 
 fuzz: '20%'
-mode: diffs_first
+#mode: diffs_first
 
 #A list of URLs to skip when spidering. Ruby regular expressions can be
 #used, if prefixed with !ruby/regexp as defined in the YAML Cookbook
