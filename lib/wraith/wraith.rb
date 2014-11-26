@@ -7,7 +7,7 @@ class Wraith::Wraith
     if File.exist?(config_name) && File.extname(config_name) == '.yaml'
       @config = YAML.load(File.open(config_name))
     else
-      @config = YAML.load(File.open("configs/#{config_name}.yaml"))
+      @config = YAML.load(File.open("wraith/#{config_name}.yaml"))
     end
   rescue
     puts 'unable to find config'

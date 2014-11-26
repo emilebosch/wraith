@@ -18,9 +18,10 @@ class Wraith::CLI < Thor
   end
 
   desc 'init', 'creates config folder and default config'
+
   def init
-    template('configs/config.yaml', 'configs/config.yaml')
-    template('javascript/snap.js', 'javascript/snap.js')
+    template('configs/config.yaml', 'wraith/config.yaml')
+    template('javascript/snap.js',  'wraith/javascript/snap.js')
   end
 
   desc 'clean [config_name]', 'removes all the files in the shots folder'
