@@ -7,6 +7,7 @@ require 'wraith/folder'
 require 'wraith/thumbnails'
 require 'wraith/compare_images'
 require 'wraith/gallery'
+require 'launchy'
 
 class Wraith::CLI < Thor
   include Thor::Actions
@@ -96,6 +97,12 @@ class Wraith::CLI < Thor
     end
   end
 
+  desc 'open [config_name]', 'Open galery'
+  def open(config='config')
+    wraith = Wraith::Wraith.new(config)
+    puts "#{wraith.directory}/index.html"
+    Launchy.open( "#{wraith.directory}/index.html")
+  end
 
   desc 'go [config_name]', 'A full Wraith job'
   def go(config='config')
