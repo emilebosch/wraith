@@ -106,7 +106,7 @@ class Wraith::CLI < Thor
 
   desc 'go [config_name]', 'Run'
   option :ci, :type => :boolean
-  def go(config='config', ci=false)
+  def go(config='config')
     clean(config)
     check_for_paths(config)
     setup_folders(config)
@@ -115,7 +115,7 @@ class Wraith::CLI < Thor
     compare_images(config)
     generate_thumbnails(config)
     generate_gallery(config)
-    open(config) unless ci
+    open(config) unless options[:ci]
   end
 
 
@@ -137,6 +137,6 @@ class Wraith::CLI < Thor
     compare_images(config)
     generate_thumbnails(config)
     generate_gallery(config)
-    open(config) unless ci
+    open(config) unless options[:ci]
   end
 end
