@@ -14,6 +14,10 @@ class Wraith::Wraith
     exit 1
   end
 
+  def fail_log
+    "#{directory}.log" 
+  end
+
   def directory
     # Legacy support for those using array configs
     @config['directory'].is_a?(Array) ? @config['directory'].first : @config['directory']

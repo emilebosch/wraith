@@ -134,9 +134,10 @@ class Wraith::CLI < Thor
     restore_shots(config)
     save_images(config, true)
     crop(config)
-    compare_images(config)
+    ok = compare_images(config)
     generate_thumbnails(config)
     generate_gallery(config)
-    open(config) unless options[:ci]
+    open(config) unless ok unless options[:ci]
+    exit 1 unless ok
   end
 end
