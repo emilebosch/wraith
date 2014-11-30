@@ -97,15 +97,16 @@ class Wraith::CLI < Thor
     end
   end
 
-  desc 'open [config_name]', 'Open galery'
+  desc 'open [config_name]', 'Open gallery'
   def open(config='config')
     wraith = Wraith::Wraith.new(config)
     puts "#{wraith.directory}/index.html"
     Launchy.open( "#{wraith.directory}/index.html")
   end
 
-  desc 'go [config_name]', 'A full Wraith job'
-  def go(config='config')
+  desc 'go [config_name]', 'Run'
+  option :ci, :type => :boolean
+  def go(config='config', ci=false)
     clean(config)
     check_for_paths(config)
     setup_folders(config)
@@ -114,6 +115,7 @@ class Wraith::CLI < Thor
     compare_images(config)
     generate_thumbnails(config)
     generate_gallery(config)
+    open(config) unless ci
   end
 
 
@@ -126,7 +128,8 @@ class Wraith::CLI < Thor
   end
 
   desc 'latest [config_name]', 'Capture new shots to compare with baseline'
-  def compare(config='config')
+  option :ci, :type => :boolean
+  def compare(config='config', ci=false)
     clean(config)
     restore_shots(config)
     save_images(config, true)
@@ -134,5 +137,6 @@ class Wraith::CLI < Thor
     compare_images(config)
     generate_thumbnails(config)
     generate_gallery(config)
+    open(config) unless ci
   end
 end
